@@ -96,6 +96,123 @@ public:
             flipColor(node);
         }
     }
+
+    Node* parent(Node* root, Node* n) {
+        if (root == nullptr || root == n) {
+            return nullptr;
+        }
+
+        if (root->left == n || root->right == n) {
+            return root;
+        }
+
+        Node* leftParent = parent(root->left, n);
+        if (leftParent != nullptr) {
+            return leftParent;
+        }
+
+        return parent(root->right, n);
+    }
+
+    Node* parent(Node* n) {
+        if (n != nullptr && n != root) {
+            return parent(root, n);
+        }
+        else {
+            return nullptr;
+        }
+    }
+
+    Node* sibling(Node* n) {
+        Node* p = parent(n);
+        if (n == p->left) {
+            return p->right;
+        }
+        else {
+            return p->left;
+        }
+    }
+
+    void deleteCase1(Node* n) {
+        if (n != root) {
+            deleteCase2(n);
+        }
+    }
+
+    void deleteCase2(Node* n) {
+        Node* s = sibling(n);
+        Node* p = parent(n);
+        if (s->isRed) {
+            p->isRed = true;
+            s->isRed = false;
+            if (n == p->left) {
+                rotateLeft(p);
+            }
+            else {
+                rotateRight(p);
+            }
+        }
+        deleteCase3(n);
+    }
+
+    void deleteCase3(Node* n) {
+        Node* s = sibling(n);
+        Node* p = parent(n);
+        if (!p->isRed && !s->isRed && !s->left->isRed && !s->right->isRed) {
+            s->isRed = true;
+            deleteCase1(p);
+        }
+        else {
+            deleteCase4(n);
+        }
+    }
+
+    void deleteCase4(Node* n) {
+        Node* s = sibling(n);
+        Node* p = parent(n);
+        if (p->isRed && !s->isRed && !s->left->isRed && !s->right->isRed) {
+            p->isRed = true;
+            s->isRed = false;
+        }
+        else {
+            deleteCase5(n);
+        }
+    }
+
+    void deleteCase5(Node* n) {
+        Node* s = sibling(n);
+        Node* p = parent(n);
+        if (!s->isRed) {
+            if (n == p->left && !s->right->isRed && s->left->isRed) {
+                s->isRed = true;
+                s->left->isRed = false;
+                rotateRight(s);
+            }
+            else if (n == p->right && !s->left->isRed && s->right->isRed) {
+                s->isRed = true;
+                s->right->isRed = false;
+                rotateLeft(s);
+            }
+        }
+        deleteCase6(n);
+    }
+
+    void deleteCase6(Node* n) {
+        Node* s = sibling(n);
+        Node* p = parent(n);
+        s->isRed = p->isRed;
+        p->isRed = false;
+        if (n == p->left) {
+            s->right->isRed = false;
+            rotateLeft(p);
+        }
+        else {
+            s->left->isRed = false;
+            rotateRight(p);
+        }
+    }
+
+
     void display(Node* node) {
         if (node == NULL) {
             return;
@@ -147,7 +264,7 @@ public:
 
 int main() {
 
-   
+
 
     return 0;
 }
