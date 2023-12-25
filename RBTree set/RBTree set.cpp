@@ -107,6 +107,43 @@ public:
     }
 };
 
+class Set : public RBTree {
+public:
+    Set() {}
+
+    Set(std::initializer_list<int> values) {
+        for (int value : values) {
+            Node* newNode = new Node(value);
+            insert(root, newNode);
+            arr.push_back(newNode);
+        }
+    }
+
+    void insertSet(int x) {
+        Node* newNode = new Node(x);
+        insert(root, newNode);
+        arr.push_back(newNode);
+    }
+
+    bool contains(int x) {
+        for (const auto& el : arr) {
+            if (el->val == x) {
+                return true;
+            }
+        }
+        insertSet(x);
+        return false;
+    }
+
+    void displaySet() {
+        if (root == nullptr) {
+            std::cout << "set is empty" << "\n";
+            return;
+        }
+        display(root);
+        std::cout << "\n";
+    }
+};
 
 int main() {
 
